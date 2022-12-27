@@ -1,0 +1,92 @@
+openapi: 3.0.1
+info:
+  title: Xrpl Faucet
+  contact:
+    email: dangell@transia.co
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: What is Xrpl Faucet
+  url: https://faucet.transia.co
+servers:
+- url: https://xrpl-faucet-3uzuax5sua-uc.a.run.app/v1
+tags:
+- name: accounts
+  description: Account API Endpoints
+paths:
+  /accounts:
+    post:
+      tags:
+      - accounts
+      summary: Account Faucet
+      operationId: accounts_faucet
+      requestBody:
+        description: Xrpl Faucet Payload
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/XrplFaucetRequest'
+        required: true
+      responses:
+        "200":
+          description: Xrpl Faucet Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XrplFaucetResponse'
+      x-openapi-router-controller: swagger_server.controllers.accounts_controller
+components:
+  schemas:
+    FaucetAccount:
+      required:
+      - classicAddress
+      - secret
+      - xAddress
+      type: object
+      properties:
+        xAddress:
+          type: string
+        classicAddress:
+          type: string
+        secret:
+          type: string
+      example:
+        xAddress: xAddress
+        classicAddress: classicAddress
+        secret: secret
+    XrplFaucetResponse:
+      required:
+      - account
+      - amount
+      - balance
+      type: object
+      properties:
+        account:
+          $ref: '#/components/schemas/FaucetAccount'
+        amount:
+          type: number
+        balance:
+          type: number
+      example:
+        account:
+          xAddress: xAddress
+          classicAddress: classicAddress
+          secret: secret
+        amount: amount
+        balance: balance
+    XrplFaucetRequest:
+      required:
+      - destination
+      - xrpAmount
+      type: object
+      properties:
+        destination:
+          type: string
+        xrpAmount:
+          type: string
+      example:
+        destination: destination
+        xrpAmount: xrpAmount
+
