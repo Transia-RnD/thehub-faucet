@@ -47,7 +47,7 @@ def accounts_faucet(body):  # noqa: E501
             )
             response = send_reliable_submission(pay_prepared, client)
 
-            if response.result['TransactionResult'] != 'tesSUCCESS':
+            if 'meta' in response.result and response.result['meta']['TransactionResult'] != 'tesSUCCESS':
                 raise ValueError('transaction was not successful')
 
             account: FaucetAccount = FaucetAccount(

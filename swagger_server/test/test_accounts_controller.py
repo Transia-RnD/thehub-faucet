@@ -14,7 +14,7 @@ class TestAccountsController(BaseTestCase):
     """AccountsController integration test stubs"""
 
     destination: str = 'rhfbXVZP7JFTFwAuhoqmeXCjSdMyHo5Gc8'
-    xrp_amount: str = '1000'
+    xrp_amount: str = '1'
 
     def test_accounts_faucet(self):
         """Test case for accounts_faucet

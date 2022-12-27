@@ -1,0 +1,26 @@
+name: Python
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  server:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.9]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Fix Windows Git autocrlf
+      run: git config --global core.autocrlf false
+      if: matrix.os == 'windows-latest'
+    - uses: actions/checkout@v2
+    - name: Use Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Test Server
+      run: pip3 install -r requirements.txt && pip3 install -r test-requirements.txt && python3 swagger_server/test.py
