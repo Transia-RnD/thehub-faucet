@@ -34,4 +34,4 @@ urllib3==1.26.13
 websockets==10.4
 Werkzeug==2.2.2
 wrapt==1.14.1
-xrpl-py==1.7.0
+xrpl-py @ git+https://github.com/Transia-RnD/xrpl-py.git@494d6fdd867815725a10e73fdfa4f1cd850c7dbc
