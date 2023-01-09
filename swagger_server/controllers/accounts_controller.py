@@ -1,11 +1,6 @@
 import connexion
 import os
 
-from swagger_server.models.xrpl_faucet_request import XrplFaucetRequest  # noqa: E501
-from swagger_server.models.faucet_account import FaucetAccount  # noqa: E501
-from swagger_server.models.xrpl_faucet_response import XrplFaucetResponse  # noqa: E501
-from swagger_server import util
-
 from xrpl.clients import WebsocketClient
 from xrpl.wallet import Wallet
 from xrpl.models.transactions.payment import Payment
@@ -14,6 +9,13 @@ from xrpl.transaction import (
     send_reliable_submission
 )
 from xrpl.utils import xrp_to_drops
+
+from swagger_server.config import Config
+
+from swagger_server.models.xrpl_faucet_request import XrplFaucetRequest  # noqa: E501
+from swagger_server.models.faucet_account import FaucetAccount  # noqa: E501
+from swagger_server.models.xrpl_faucet_response import XrplFaucetResponse  # noqa: E501
+from swagger_server import util
 
 w3 = WebsocketClient(os.environ['XRPL_FAUCET_URL'])
 
@@ -32,9 +34,9 @@ def accounts_faucet(body):  # noqa: E501
         if connexion.request.is_json:
             body = XrplFaucetRequest.from_dict(connexion.request.get_json())  # noqa: E501
 
-        wallet: Wallet = Wallet(os.environ['XRPL_FAUCET_SEED'], 0)
+        wallet: Wallet = Wallet(Config.XRPL_FAUCET_SEED or os.environ['XRPL_FAUCET_SEED'], 0)
         with w3 as client:
-            drop_value = xrp_to_drops(float(body.xrp_amount))
+            drop_value = xrp_to_drops(float(body.xrp_amount or 1000))
             send_token_tx = Payment(
                 account=wallet.classic_address,
                 destination=body.destination,

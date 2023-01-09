@@ -69,3 +69,6 @@ target/
 # apple
 .DS_Store
 .DS_Store?
+
+credentials.json
+secret.json

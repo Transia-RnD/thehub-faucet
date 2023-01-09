@@ -13,6 +13,8 @@ Python 3.5.2+
 ## Usage
 To run the server, please execute the following from the root directory:
 
+`export GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/credentials.json"`
+
 ```
 pip3 install -r requirements.txt
 python3 -m swagger_server
@@ -47,3 +49,9 @@ docker build -t swagger_server .
 # starting up a container
 docker run -p 8080:8080 swagger_server
 ```
+
+docker build --platform=linux/amd64 --tag transia/faucet:latest . && docker tag transia/faucet:latest gcr.io/metaxrplorer/faucet:latest && docker push gcr.io/metaxrplorer/faucet:latest
+
+Test API
+
+`curl -d '{"destination":"rhfbXVZP7JFTFwAuhoqmeXCjSdMyHo5Gc8", "xrpAmount": "10000"}' -H "Content-Type: application/json" -X POST https://faucet-vnshe3skla-uc.a.run.app/accounts`
