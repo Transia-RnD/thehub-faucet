@@ -11,7 +11,8 @@ externalDocs:
   description: What is Xrpl Faucet
   url: https://faucet.transia.co
 servers:
-- url: https://xrpl-faucet-3uzuax5sua-uc.a.run.app/v1
+- url: https://faucet-vnshe3skla-uc.a.run.app
+- url: https://faucet.transia.co
 tags:
 - name: accounts
   description: Account API Endpoints
@@ -79,7 +80,7 @@ components:
     XrplFaucetRequest:
       required:
       - destination
-      - xrpAmount
+      # - xrpAmount
       type: object
       properties:
         destination:

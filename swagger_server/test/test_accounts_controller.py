@@ -26,7 +26,7 @@ class TestAccountsController(BaseTestCase):
             xrp_amount=self.xrp_amount
         )
         response = self.client.open(
-            '/v1/accounts',
+            '/accounts',
             method='POST',
             data=json.dumps(body),
             content_type='application/json')
