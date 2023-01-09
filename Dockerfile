@@ -1,7 +1,15 @@
-FROM python:3.6-alpine
+FROM python:3.9.6-slim
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y git && \
+    apt-get install -y build-essential
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
+
+ARG XRPL_FAUCET_URL
+ENV XRPL_FAUCET_URL $XRPL_FAUCET_URL
 
 COPY requirements.txt /usr/src/app/
 
@@ -11,6 +19,4 @@ COPY . /usr/src/app
 
 EXPOSE 8080
 
-ENTRYPOINT ["python3"]
-
-CMD ["-m", "swagger_server"]
+CMD exec gunicorn --bind :8080 --workers 1 swagger_server:app --timeout 3600
