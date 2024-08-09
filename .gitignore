@@ -72,3 +72,5 @@ target/
 
 credentials.json
 secret.json
+
+.venv

@@ -50,6 +50,8 @@ docker build -t swagger_server .
 docker run -p 8080:8080 swagger_server
 ```
 
+docker run -p 8080:8080 -e XRPL_FAUCET_URL=wss://batch.nerdnest.xyz -e XRPL_NETWORK_ID=21336 -e XRPL_FAUCET_SEED=sEdToPwdVKBHGwBdWhE48Csg6RjeEnB transia/faucet
+
 docker build --platform=linux/amd64 --tag transia/faucet:latest . && docker tag transia/faucet:latest gcr.io/metaxrplorer/faucet:latest && docker push gcr.io/metaxrplorer/faucet:latest
 
 Test API

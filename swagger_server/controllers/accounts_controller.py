@@ -5,8 +5,8 @@ from xrpl.clients import WebsocketClient
 from xrpl.wallet import Wallet
 from xrpl.models.transactions.payment import Payment
 from xrpl.transaction import (
-    safe_sign_and_autofill_transaction,
-    send_reliable_submission
+    autofill_and_sign,
+    submit_and_wait
 )
 from xrpl.utils import xrp_to_drops
 
@@ -16,8 +16,6 @@ from swagger_server.models.xrpl_faucet_request import XrplFaucetRequest  # noqa:
 from swagger_server.models.faucet_account import FaucetAccount  # noqa: E501
 from swagger_server.models.xrpl_faucet_response import XrplFaucetResponse  # noqa: E501
 from swagger_server import util
-
-w3 = WebsocketClient(os.environ['XRPL_FAUCET_URL'])
 
 
 def accounts_faucet(body):  # noqa: E501
@@ -34,20 +32,21 @@ def accounts_faucet(body):  # noqa: E501
         if connexion.request.is_json:
             body = XrplFaucetRequest.from_dict(connexion.request.get_json())  # noqa: E501
 
-        wallet: Wallet = Wallet(Config.XRPL_FAUCET_SEED or os.environ['XRPL_FAUCET_SEED'], 0)
-        with w3 as client:
+        wallet: Wallet = Wallet.from_seed(os.environ['XRPL_FAUCET_SEED'])
+        with WebsocketClient(os.environ['XRPL_FAUCET_URL']) as client:
             drop_value = xrp_to_drops(float(body.xrp_amount or 1000))
             send_token_tx = Payment(
                 account=wallet.classic_address,
                 destination=body.destination,
-                amount=drop_value
+                amount=drop_value,
+                network_id=int(os.environ.get('XRPL_NETWORK_ID', 21336)),
             )
-            pay_prepared = safe_sign_and_autofill_transaction(
+            pay_prepared = autofill_and_sign(
                 transaction=send_token_tx,
-                wallet=wallet,
                 client=client,
+                wallet=wallet,
             )
-            response = send_reliable_submission(pay_prepared, client)
+            response = submit_and_wait(pay_prepared, client)
 
             if 'meta' not in response.result or response.result['meta']['TransactionResult'] != 'tesSUCCESS':
                 raise ValueError('transaction was not successful')
