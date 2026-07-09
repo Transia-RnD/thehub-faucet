@@ -35,11 +35,14 @@ def accounts_faucet(body):  # noqa: E501
         wallet: Wallet = Wallet.from_seed(os.environ['XRPL_FAUCET_SEED'])
         with WebsocketClient(os.environ['XRPL_FAUCET_URL']) as client:
             drop_value = xrp_to_drops(float(body.xrp_amount or 1000))
+            # Leave network_id unset: autofill_and_sign derives it from the
+            # connected node (server_info) for restricted networks (id > 1024),
+            # so the faucet always signs for whatever chain XRPL_FAUCET_URL points
+            # at — no static, drift-prone XRPL_NETWORK_ID to keep in sync.
             send_token_tx = Payment(
                 account=wallet.classic_address,
                 destination=body.destination,
                 amount=drop_value,
-                network_id=int(os.environ.get('XRPL_NETWORK_ID', 21336)),
             )
             pay_prepared = autofill_and_sign(
                 transaction=send_token_tx,
